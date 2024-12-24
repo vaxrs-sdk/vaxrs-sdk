@@ -1,0 +1,42 @@
+name: Nix Flake actions
+on:
+  pull_request:
+  push:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  nix-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get install -y qemu-user-static
+      - uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            extra-platforms = aarch64-linux armv6l-linux armv7l-linux i686-linux riscv64-linux
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - id: set-matrix
+        name: Generate Nix Matrix
+        run: |
+          set -Eeu
+          matrix="$(nix eval --json '.#githubActions.matrix')"
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+  nix-run-checks:
+    name: ${{ matrix.name }} (${{ matrix.system }})
+    needs: [nix-matrix]
+    if: ${{ needs.nix-matrix.result == 'success' }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix: ${{fromJSON(needs.nix-matrix.outputs.matrix)}}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-qemu-action@v3
+      - uses: DeterminateSystems/nix-installer-action@main
+        with:
+          extra-conf: |
+            extra-platforms = aarch64-linux armv6l-linux armv7l-linux i686-linux riscv64-linux
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - run: nix build -L ".#${{ matrix.attr }}" --impure
