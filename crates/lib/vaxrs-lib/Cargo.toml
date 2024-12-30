@@ -10,6 +10,18 @@ readme.workspace = true
 repository.workspace = true
 homepage.workspace = true
 
+[features]
+default = []
+device-type-ar = []
+device-type-vr = []
+device-type-xr = []
+oem-meta-quest = []
+oem-viture = []
+viture-one = ["oem-viture", "device-type-vr", "device-type-xr"]
+viture-pro = ["oem-viture", "device-type-vr", "device-type-xr"]
+meta-quest-2 = ["oem-meta-quest", "device-type-vr"]
+meta-quest-3 = ["oem-meta-quest", "device-type-vr"]
+
 [dependencies]
 eyre.workspace = true
 log.workspace = true
