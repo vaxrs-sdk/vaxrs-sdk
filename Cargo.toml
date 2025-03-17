@@ -26,5 +26,5 @@ tokio = { version = "1", features = ["full"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["ansi", "fmt", "registry", "env-filter"] }
 typed-builder = "0.18.2"
-uuid = { version = "1.15", features = ["v4", "serde"] }
+uuid = { version = "1.16", features = ["v4", "serde"] }
 whoami = "1.5.1"
