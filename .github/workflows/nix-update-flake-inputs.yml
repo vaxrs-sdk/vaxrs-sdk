@@ -15,7 +15,7 @@ jobs:
   update-nix-flake:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - run: sudo apt-get install -y qemu-user-static
       - uses: DeterminateSystems/nix-installer-action@main
         with:
