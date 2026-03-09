@@ -33,7 +33,7 @@ jobs:
       matrix: ${{fromJSON(needs.nix-matrix.outputs.matrix)}}
     steps:
       - uses: actions/checkout@v6
-      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-qemu-action@v4
       - uses: DeterminateSystems/nix-installer-action@main
         with:
           extra-conf: |
